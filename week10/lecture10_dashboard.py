@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 18 18:50:24 2026
-
-@author: dina.deifallah
-"""
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -64,22 +56,12 @@ filtered = df[
     (df['Year'] <= year_range[1])
 ]
 
-# for clarity: showing the number of countries and the number of data points selected
 st.caption(f"Showing {len(selected_countries)} countries | {len(filtered)} data points")
-
-
-# Figure 1: Line chart — highlight one country, grey out the rest
-# FIX: a 26-colour qualitative palette is unreadable once you select more than
-# ~5 countries — every line competes for attention and none of them win.
-# Instead: pick ONE country to highlight in a bold colour, and render every
-# other selected country in the same neutral grey. This turns the chart into
-# a clear "X vs the rest" story instead of a rainbow of noise.
 
 HIGHLIGHT_COLOR = '#E63946'   # bold red — draws the eye
 GREY_COLOR      = '#BBBBBB'   # neutral grey for context lines
 
-# Build a discrete colour map: highlighted country gets the bold colour,
-# every other selected country gets the same grey
+
 color_map = {
     country: (HIGHLIGHT_COLOR if country == highlight_country else GREY_COLOR)
     for country in selected_countries
