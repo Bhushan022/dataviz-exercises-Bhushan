@@ -1,9 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun 18 18:50:24 2026
+
+@author: dina.deifallah
+"""
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 from pathlib import Path
 
 
+
+# @st.cache_data: Streamlit reruns the entire script on every widget interaction.
+# Without caching, the CSV is read from disk on every interaction — slow and wasteful.
+# cache_data stores the result after the first run and reuses it until the file changes
 
 @st.cache_data
 def load_data():
@@ -35,7 +47,15 @@ with st.sidebar:
     # Tuple default → two-handle range slider
     year_range = st.slider("Year range",
         int(df['Year'].min()), int(df['Year'].max()), (2010, 2020))
-    
+
+    # filter 3: which country to highlight in Figure 1
+    # selected_countries is guaranteed non-empty here because of the st.stop()
+    # guard above, so this selectbox always has at least one valid option
+    highlight_country = st.selectbox(
+        "Highlight country",
+        selected_countries,
+        index=0
+    )
     
 # applying filtering by country and year range 
 filtered = df[
@@ -55,13 +75,8 @@ st.caption(f"Showing {len(selected_countries)} countries | {len(filtered)} data 
 # other selected country in the same neutral grey. This turns the chart into
 # a clear "X vs the rest" story instead of a rainbow of noise.
 
-with st.sidebar:
-    highlight_country = st.selectbox(
-        "Highlight country",
-        selected_countries,
-        index=0
-    )
-
+HIGHLIGHT_COLOR = '#E63946'   # bold red — draws the eye
+GREY_COLOR      = '#BBBBBB'   # neutral grey for context lines
 
 # Build a discrete colour map: highlighted country gets the bold colour,
 # every other selected country gets the same grey
